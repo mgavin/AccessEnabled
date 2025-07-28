@@ -142,6 +142,5 @@ std::string AccessEnabled::GetPluginName() {
 * @brief Set the current ImGui context (for bakkesmod's purpose).
 */
 void AccessEnabled::SetImGuiContext(uintptr_t ctx) {
-      log::log_debug("IMGUI CONTEXT");
       ImGui::SetCurrentContext(reinterpret_cast<ImGuiContext *>(ctx));
 }
