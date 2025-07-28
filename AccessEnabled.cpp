@@ -121,7 +121,7 @@ void AccessEnabled::RenderSettings() {
 * Disabled" status from them.
 *
 * Honestly, if it does more than that, then there's an issue.
-* It shouldn's. Please report it.
+* It shouldn't. Please report it.
 *
 
           )""");
