@@ -26,7 +26,7 @@ namespace {
 namespace log = LOGGER;
 }
 
-BAKKESMOD_PLUGIN(AccessEnabled, "AccessEnabled", "1.0.0", NULL);
+BAKKESMOD_PLUGIN(AccessEnabled, "AccessEnabled", "1.2.0", NULL);
 
 /**
 * @brief Things that happen when the plugin is loaded.
@@ -37,7 +37,7 @@ void AccessEnabled::onLoad() {
 
       // set up logging necessities
       log::set_cvarmanager(cvarManager);
-      log::set_loglevel(log::LOGLEVEL::OFF);
+      log::set_loglevel(log::LOGLEVEL::INFO);
 
       CVarManager::instance().set_cvar_prefix("ae_");
       CVarManager::instance().set_cvarmanager(cvarManager);
@@ -73,27 +73,36 @@ void AccessEnabled::init_hooked_events() {
 * @brief Things that need to be set to be activated/run when the plugin is turned "on".
 */
 void AccessEnabled::enable_plugin() {
+      static uint32_t c;
       HookedEvents::AddHookedEventWithCaller<ActorWrapper>(
             "Function TAGame.MenuTreeNodeEnabledChecker_TA.UpdateGFxNodeEnabled",
             [this](ActorWrapper unused, void * params, std::string eventName) {
                   struct parms {
                         uintptr_t n;
                         _ *       s;
-                  } * p = reinterpret_cast<parms *>(params);
-
-                  restore[reinterpret_cast<uintptr_t>(p->s)] = p->s->r;
-                  p->s->r                                    = 0;
+                  } * p   = reinterpret_cast<parms *>(params);
+                  c       = p->s->r;
+                  p->s->r = 0;
             });
+
+      HookedEvents::AddHookedEventWithCaller<ActorWrapper>(
+            "Function TAGame.MenuTreeNodeEnabledChecker_TA.UpdateGFxNodeEnabled",
+            [this](ActorWrapper unused, void * params, std::string eventName) {
+                  struct parms {
+                        uintptr_t n;
+                        _ *       s;
+                  } * p   = reinterpret_cast<parms *>(params);
+                  p->s->r = c;
+            },
+            true);
 }
 
 /**
 * @brief Things that need to be deactivated when the plugin is turned "off".
 */
 void AccessEnabled::disable_plugin() {
-      for (auto & x : restore) {
-            reinterpret_cast<_ *>(x.first)->r = x.second;
-      }
       HookedEvents::RemoveHook("Function TAGame.MenuTreeNodeEnabledChecker_TA.UpdateGFxNodeEnabled");
+      HookedEvents::RemoveHook("Function TAGame.MenuTreeNodeEnabledChecker_TA.UpdateGFxNodeEnabled", true);
 }
 
 /**
@@ -110,7 +119,6 @@ void AccessEnabled::RenderSettings() {
       ImGui::TextWrapped(
             "%s",
             R"""(
-* Access Enabled Bakkesmod Plugin for Rocket League
 *
 * This plugin's purpose is to enable access to different menu items that are
 * normally inaccessible to the player in certain game states.

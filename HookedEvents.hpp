@@ -30,15 +30,6 @@ private:
 
             HookedEvent(std::string eN, bool iP) : eventName(std::move(eN)), isPost(iP) {}
             ~HookedEvent() { isPost ? gameWrapper->UnhookEventPost(eventName) : gameWrapper->UnhookEvent(eventName); }
-
-            static void UnhookEvent(std::string eventName, bool isPost) {
-                  // just because it might already exist.
-                  if (isPost) {
-                        gameWrapper->UnhookEventPost(eventName);
-                  } else {
-                        gameWrapper->UnhookEvent(eventName);
-                  }
-            }
       };
 
       struct hook_cmp {
@@ -72,7 +63,7 @@ public:
             std::function<void(std::string eventName)> func,
             bool                                       isPost = false);
 
-      static void RemoveHook(std::string);
+      static void RemoveHook(std::string, bool);
       static void RemoveHook(std::regex);
       static void RemoveAllHooks();
 };
@@ -143,9 +134,9 @@ inline void HookedEvents::AddHookedEvent(
       hooked_events.insert(std::make_shared<HookedEvent>(eventName, isPost));
 }
 
-inline void HookedEvents::RemoveHook(std::string key) {
-      auto it = std::find_if(begin(hooked_events), end(hooked_events), [key](const auto & he) {
-            return he->eventName == key;
+inline void HookedEvents::RemoveHook(std::string key, bool isPost = false) {
+      auto it = std::find_if(begin(hooked_events), end(hooked_events), [=](const auto & he) {
+            return he->eventName == key && he->isPost == isPost;
       });
       if (it != end(hooked_events)) {
             hooked_events.erase(it);
