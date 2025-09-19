@@ -15,7 +15,7 @@
 class AccessEnabled : public BakkesMod::Plugin::BakkesModPlugin, public BakkesMod::Plugin::PluginSettingsWindow {
 private:
       std::unique_ptr<PersistentManagedCVarStorage> cvar_storage;
-      bool                                          plugin_enabled = true;
+      bool                                          plugin_enabled = false;
 
       void init_cvars();
       void init_hooked_events();

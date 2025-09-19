@@ -54,6 +54,7 @@ void AccessEnabled::onLoad() {
 void AccessEnabled::init_cvars() {
       CVarManager::instance().register_cvars();
       CVarManager::instance().get_cvar_enabled().addOnValueChanged([this](std::string oldValue, CVarWrapper newValue) {
+            if (plugin_enabled && newValue.getBoolValue()) { return; }
             plugin_enabled = newValue.getBoolValue();
             plugin_enabled ? enable_plugin() : disable_plugin();
       });
