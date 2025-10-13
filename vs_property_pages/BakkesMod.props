@@ -6,11 +6,11 @@
   </PropertyGroup>
   <PropertyGroup>
     <_PropertySheetDisplayName>BakkesMod</_PropertySheetDisplayName>
-    <CopyFileAfterTargets>PostBuildEvent</CopyFileAfterTargets>
+    <!-- <CopyFileAfterTargets>PostBuildEvent</CopyFileAfterTargets> -->
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>imgui;$(BakkesModPath)\bakkesmodsdk\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>imgui;bakkesmod\bakkesmodsdk\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_WINDLL;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -23,17 +23,19 @@
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(BakkesModPath)\bakkesmodsdk\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>bakkesmod\bakkesmodsdk\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>pluginsdk.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
     </Link>
+    <!--
     <PostBuildEvent>
       <Command> "$(BakkesModPath)\bakkesmodsdk\bakkesmod-patch.exe" "$(TargetPath)"</Command>
     </PostBuildEvent>
     <CopyFileToFolders>
       <TreatOutputAsContent>false</TreatOutputAsContent>
     </CopyFileToFolders>
+    -->
   </ItemDefinitionGroup>
   <ItemGroup>
     <BuildMacro Include="BakkesModPath">
