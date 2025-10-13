@@ -50,6 +50,8 @@ jobs:
 
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v2
+      with:
+        msbuild-architecture: x64
 
     - name: Find solution file
       id: find_sln
@@ -61,7 +63,7 @@ jobs:
         echo "SOLUTION_PATH=$($sln.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Append
 
     - name: Build
-      run: msbuild /m /p:Configuration=Release /p:BakkesModPath=$env:GITHUB_WORKSPACE\bakkesmod /p:PostBuildEventUseInBuild=false $env:SOLUTION_PATH
+      run: msbuild /p:OutDir=$env:GITHUB_WORKSPACE\plugins /m /p:Configuration=Release /p:BakkesModPath=$env:GITHUB_WORKSPACE\bakkesmod /p:PostBuildEventUseInBuild=false $env:SOLUTION_PATH
 
 
     - name: Prepare build artifacts
@@ -89,12 +91,20 @@ jobs:
         $zipName = "${{ github.event.repository.name }}-$timestamp.zip"
 
         if (Test-Path "artifacts") {
-          Compress-Archive -Path "artifacts\*" -DestinationPath $zipName
-          echo "RELEASE_ZIP=$zipName" >> $env:GITHUB_ENV
-        } else {
-          Write-Error "No artifacts found to archive"
-          exit 1
+          try {
+            Compress-Archive -Path "artifacts\*" -DestinationPath $zipName
+            if (Test-Path $zipName) {
+              echo "RELEASE_ZIP=$zipName" >> $env:GITHUB_ENV
+            } else {
+              Write-Error "No artifacts found to archive"
+              exit 1
+            }
+          } catch {
+            Write-Error "No artifacts found to archive"
+            exit 1
+          }
         }
+
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
