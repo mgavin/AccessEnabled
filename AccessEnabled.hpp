@@ -23,8 +23,6 @@ private:
       void enable_plugin();
       void disable_plugin();
 
-      std::map<uintptr_t, uint32_t> restore;
-
       struct _ {
             unsigned char q[0x128];
             uint32_t      r;

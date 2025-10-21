@@ -42,7 +42,7 @@ void AccessEnabled::onLoad() {
       CVarManager::instance().set_cvar_prefix("ae_");
       CVarManager::instance().set_cvarmanager(cvarManager);
 
-      cvar_storage = std::make_unique<PersistentManagedCVarStorage>(this, "ae_cvars", true, true);
+      cvar_storage = std::make_unique<PersistentManagedCVarStorage>(this, "accessenabled_cvars", true, true);
 
       init_cvars();
       init_hooked_events();
@@ -54,7 +54,9 @@ void AccessEnabled::onLoad() {
 void AccessEnabled::init_cvars() {
       CVarManager::instance().register_cvars();
       CVarManager::instance().get_cvar_enabled().addOnValueChanged([this](std::string oldValue, CVarWrapper newValue) {
-            if (plugin_enabled && newValue.getBoolValue()) { return; }
+            if (plugin_enabled && newValue.getBoolValue()) {
+                  return;
+            }
             plugin_enabled = newValue.getBoolValue();
             plugin_enabled ? enable_plugin() : disable_plugin();
       });
