@@ -136,9 +136,9 @@ void AccessEnabled::RenderSettings() {
 *
 
           )""");
-
-      if (ImGui::Checkbox("Enable the plugin?", &plugin_enabled)) {
-            CVarManager::instance().get_cvar_enabled().setValue(plugin_enabled);
+      static bool pe = CVarManager::instance().get_cvar_enabled().getBoolValue();
+      if (ImGui::Checkbox("Enable the plugin?", &pe)) {
+            CVarManager::instance().get_cvar_enabled().setValue(pe);
       }
 }
 
